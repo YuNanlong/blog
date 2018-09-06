@@ -1,0 +1,118 @@
+{% load post_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}大兔崽子的博客{% endblock %}</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./homepage.css">  
+    <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <img width="20px" height="20px" alt="Brand" src="{% static "img/brand.jpg" %}" class="img-circle">
+                </a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{% url 'post:post_list' %}">全部</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">分类<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">类别</li>
+                            {% for c in categories %}
+                            <li>
+                                <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-right" method="get" action="{% url "haystack_search" %}">
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="关键字" name="q">
+                    </div>
+                    <button type="submit" class="btn btn-default" value="Search">搜索</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <a name="top"></a>
+    <span class="blank" style="height:60px;"></span>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                {% block content %} {% endblock %}
+            </div>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-center">大兔崽子的博客</h3>
+                            </div>
+                            <div class="panel-body">
+                                使用Django和Bootstrap构建的个人博客
+                            </div>
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    {% if category %}
+                                        {{ category }}主题共写了 {% total_posts category %} 篇文章
+                                    {% elif post %}
+                                        {{ post.category }}主题共写了 {% total_posts post.category %} 篇文章
+                                    {% else %}
+                                        共写了 {% total_posts post.category %} 篇文章
+                                    {% endif %}
+                                </li>
+                                <li class="list-group-item">
+                                    最新文章
+                                    {% latest_posts %}
+                                </li>
+                                {% if post %}
+                                <li class="list-group-item">
+                                    相关文章 
+                                    {% similar_posts post %}
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>  
+                <div class="btn-group-vertical" role="group" aria-label="..." style="position:fixed; right:150px; bottom:20px;">
+                        <button type="button" class="btn btn-default"><a href="#top">回到顶部</a></button>
+                        <button type="button" class="btn btn-default">
+                            <!-- JiaThis Button BEGIN -->
+                            <div id="ckepop">
+                                <span class="jiathis_txt">分享到：</span>
+                                <a class="jiathis_button_weixin">微信</a> 
+                                <br/>
+                                <a href="http://www.jiathis.com/share"  class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+                                <a class="jiathis_counter_style"></a>
+                                <script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1" charset="utf-8"></script>   
+                            </div> 
+                            <!-- JiaThis Button END -->
+                        </button>
+                        {% if post %}
+                        <button type="button" class="btn btn-default"><a href="{% url "post:post_pdf" post.id %}">将文章<br/>导出为PDF</a></button>
+                        {% endif %}
+                </div>   
+            </div>
+        </div>
+    </div>  
+</body>
+
+</html>

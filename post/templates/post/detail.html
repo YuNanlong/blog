@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load post_tags %}
+{% load static %}
+
+{% block title %}
+    {{ post.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="row content">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h1 class="h1">{{ post.title }}</h1>
+            <h3 class="h3">
+                <small>{{ post.publish }}</small>
+                <small>
+                    <a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a>
+                </small>
+            </h3>
+            <small>
+                <strong>标签 </strong>
+                {% for post_tag in post.tags.all %}
+                    <a href="{% url "post:post_list_by_tag" post_tag.slug %}"><span class="badge">{{ post_tag.name }}</span></a>
+                {% endfor %}
+            </small>
+            <p>{{ post.content|markdown }}</p>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}
